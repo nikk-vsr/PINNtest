@@ -1,17 +1,4 @@
 # === 3) Bayesian PINN using TensorFlow Probability DenseVariational ===
-            # KL losses are in model.losses when using DenseVariational layers
-            kl_loss = tf.add_n(bayes_model.losses) if bayes_model.losses else 0.0
-
-            total_loss = data_loss + pde_weight * pde_loss + kl_loss
-
-        grads = tape.gradient(total_loss, bayes_model.trainable_variables + [kappa_var, q_var])
-        optimizer.apply_gradients(zip(grads, bayes_model.trainable_variables + [kappa_var, q_var]))
-
-    # logging
-    if epoch % 100 == 0 or epoch == n_epochs - 1:
-        print(f"Epoch {epoch}: total_loss={total_loss.numpy():.6e}, data_loss={data_loss.numpy():.6e}, pde_loss={pde_loss.numpy():.6e}, kl_loss={kl_loss.numpy() if hasattr(kl_loss,'numpy') else kl_loss:.3e}")
-
-# After training, obtain predictive mean and std using MC sampling
 n_samples_mc = 100
 X_test_grid = X_all.astype(np.float32)
 mc_preds = []
@@ -74,3 +61,4 @@ plt.show()
 # - The PDE residual computation inside the Keras/TF loop is somewhat expensive. You can optimize by vectorized, analytical
 #   expressions for second derivatives using higher-order GradientTape patterns.
 # - For production/large-scale: consider domain decomposition, transfer learning, and more sophisticated UQ like HMC.
+
